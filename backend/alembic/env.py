@@ -5,41 +5,22 @@ from pathlib import Path
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# -------------------------------------------------
-# Make app/ importable inside Alembic
-# -------------------------------------------------
-BASE_DIR = Path(__file__).resolve().parents[1]  # backend/
+# --- make /app/app importable ---
+BASE_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(BASE_DIR))
 
-# -------------------------------------------------
-# Alembic Config object
-# -------------------------------------------------
 config = context.config
 
-# -------------------------------------------------
-# Configure logging
-# -------------------------------------------------
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# -------------------------------------------------
-# Import settings + metadata (after sys.path is set)
-# -------------------------------------------------
 from app.core.config import settings
-from app.db.base import Base
-
-# Import models so Base.metadata is populated for autogenerate
-from app.models.user import User  # noqa: F401
+from app.db.base import Base  # imports Base + pulls in all models via base.py
 
 target_metadata = Base.metadata
 
 # Override sqlalchemy.url using env config
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
-
-JWT_SECRET_KEY=change-me-to-a-long-random-string
-JWT_ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=60
-
 
 
 def run_migrations_offline() -> None:
@@ -49,6 +30,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,
     )
     with context.begin_transaction():
         context.run_migrations()
@@ -67,7 +49,6 @@ def run_migrations_online() -> None:
             target_metadata=target_metadata,
             compare_type=True,
         )
-
         with context.begin_transaction():
             context.run_migrations()
 
