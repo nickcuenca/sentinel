@@ -36,6 +36,11 @@ target_metadata = Base.metadata
 # Override sqlalchemy.url using env config
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
+JWT_SECRET_KEY=change-me-to-a-long-random-string
+JWT_ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+
+
 
 def run_migrations_offline() -> None:
     url = config.get_main_option("sqlalchemy.url")
