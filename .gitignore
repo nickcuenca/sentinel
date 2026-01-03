@@ -1,0 +1,9 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.env.*
+sentinel_pgdata/
+alembic/versions/*.pyc
